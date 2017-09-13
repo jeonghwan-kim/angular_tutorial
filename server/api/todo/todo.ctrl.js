@@ -15,8 +15,7 @@ const destroy = (req,res) => {
   todos.splice(deletedTodoIdx, 1);
 
   const json = JSON.stringify(todos);
-  fs.writeFile(dbPath, json, 'utf8'); 
-  res.json(todos);
+  fs.writeFile(dbPath, json, 'utf8', () => res.json(todos)); 
 }
 
 const complete = (req,res) => {
@@ -25,8 +24,7 @@ const complete = (req,res) => {
   console.log(todos);
 
   const json = JSON.stringify(todos);
-  fs.writeFile(dbPath, json, 'utf8');
-  res.json(todos);
+  fs.writeFile(dbPath, json, 'utf8', ()=> res.json(todos));
 };
 
 const update = (req,res)=>{
@@ -37,8 +35,7 @@ const update = (req,res)=>{
   todo.completed = !todo.completed;
 
   var json = JSON.stringify(todos);
-  fs.writeFile(dbPath, json, 'utf8');
-  res.json(todos);
+  fs.writeFile(dbPath, json, 'utf8', () => res.json(todos));
 };
 
 const updateTitle = (req,res)=>{
@@ -49,14 +46,12 @@ const updateTitle = (req,res)=>{
   todo.title = req.params.title;
   
   var json = JSON.stringify(todos);
-  fs.writeFile(dbPath, json, 'utf8');
-  res.json(todos);
+  fs.writeFile(dbPath, json, 'utf8', res.json(todos));
 };
 
 const create = (req,res) => {
-  const {title} = req.params;
-
-  if (title) return res.status(400).send('None shall pass');
+  const {title} = req.body;
+  if (!title) return res.status(400).send('None shall pass');
 
   const id = todos.reduce((maxId, todo) => {
     return todo.id > maxId ? todo.id : maxId
@@ -64,8 +59,7 @@ const create = (req,res) => {
   
   todos.push({id, title, completed: false});
   const json = JSON.stringify(todos);
-  fs.writeFile(dbPath, json, 'utf8');
-  res.json(todos);
+  fs.writeFile(dbPath, json, 'utf8', res.json(todos));
 };
 
 module.exports = {query, destroy, complete, update, updateTitle, create};
