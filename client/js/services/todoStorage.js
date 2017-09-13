@@ -32,9 +32,6 @@ app.factory('todomvcStorage',function($http){
       $http({
         method:'POST',
         url:'/api/todos',
-        headrs:{
-          'Content-type': undefined
-        },
         data:{
           title:todoTitle
         }
