@@ -1,13 +1,12 @@
 const fs = require('fs');
-const express = require('express');
-const router = express.Router();
-const jsonData = fs.readFileSync('data/todos.json','utf8');
-
+const path = require('path');
+const dbPath = path.join(__dirname, '../../data/todos.json');
+const jsonData = fs.readFileSync(dbPath,'utf8');
 let todos = JSON.parse(jsonData);
 
-router.get('/', (req,res) => res.json(todos));
+const query = (req,res) => res.json(todos);
 
-router.delete('/:id', (req,res) => {
+const show = (req,res) => {
   let deletedTodoIdx;
   for(i=0;i<todos.length;i++){
     if(todos[i].id == req.params.id)
@@ -19,11 +18,11 @@ router.delete('/:id', (req,res) => {
   todos.splice(deletedTodoIdx, 1);
 
   const json = JSON.stringify(todos);
-  fs.writeFile('data/todos.json', json, 'utf8');
+  fs.writeFile(dbPath, json, 'utf8');
   res.json(todos);
-});
+}
 
-router.delete('/', (req,res) => {
+const destroy = (req,res) => {
   console.log(todos);
   const old_todos = todos;
   todos = [];
@@ -38,11 +37,11 @@ router.delete('/', (req,res) => {
   console.log(todos);
   // angular.copy(incompleteTodos, storage.todos);
   const json = JSON.stringify(todos);
-  fs.writeFile('data/todos.json', json, 'utf8');
+  fs.writeFile(dbPath, json, 'utf8');
   res.json(todos);
-});
+};
 
-router.put('/:id', (req,res)=>{
+const update = (req,res)=>{
   console.log("id of the object that will have changed is "+req.params.id);
 
   for(i=0;i<todos.length;i++){
@@ -54,12 +53,11 @@ router.put('/:id', (req,res)=>{
     }
   }
   var json = JSON.stringify(todos);
-  fs.writeFile('data/todos.json', json, 'utf8');
+  fs.writeFile(dbPath, json, 'utf8');
   res.json(todos);
+};
 
-});
-
-router.put('/:id/:title', (req,res)=>{
+const updateTitle = (req,res)=>{
   console.log("id of the object that will have changed is "+req.params.id);
 
   for(i=0;i<todos.length;i++){
@@ -71,32 +69,31 @@ router.put('/:id/:title', (req,res)=>{
     }
   }
   var json = JSON.stringify(todos);
-  fs.writeFile('data/todos.json', json, 'utf8');
+  fs.writeFile(dbPath, json, 'utf8');
   res.json(todos);
+};
 
-});
+const create = (req,res) => {
+    const idOfLastItem = todos.length - 1;
+    // console.log(todos[idOfLastItem]);
+    // console.log(req.body.title);
+    if(!req.body.title){
+  
+      return res.status(400).send('None shall pass');
+    }
+    const newId = !todos.length ?
+    1: todos[idOfLastItem].id+1;
+  
+    const newTodo = {
+      "id":newId,
+      "title":req.body.title,
+      "completed":false
+    };
+    todos.push(newTodo);
+    const json = JSON.stringify(todos);
+    fs.writeFile(dbPath, json, 'utf8');
+    res.json(todos);
+};
 
-router.post('/', (req,res) => {
+module.exports = {query, show, destroy, update, updateTitle, create};
 
-  const idOfLastItem = todos.length - 1;
-  // console.log(todos[idOfLastItem]);
-  // console.log(req.body.title);
-  if(!req.body.title){
-
-    return res.status(400).send('None shall pass');
-  }
-  const newId = !todos.length ?
-  1: todos[idOfLastItem].id+1;
-
-  const newTodo = {
-    "id":newId,
-    "title":req.body.title,
-    "completed":false
-  };
-  todos.push(newTodo);
-  const json = JSON.stringify(todos);
-  fs.writeFile('data/todos.json', json, 'utf8');
-  res.json(todos);
-});
-
-module.exports = router;
