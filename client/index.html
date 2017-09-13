@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>TODOS</title>
+  <script src="bower_components/angular/angular.min.js"></script>
+  <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css" />
+  <link rel="shortcut icon" type="image/png" href="img/favicon.ico"/>
+
+  <!-- moduels -->
+  <script src="js/controllers/TodomvcCtrl.js"></script>
+  <script src="js/services/todoStorage.js"></script>
+  <script src="js/directives/todoItem.js"></script>
+
+</head>
+<body ng-app="todomvc" >
+  <div class="container" ng-controller="TodomvcCtrl">
+    <a href="/" style="text-decoration:none"><h1>Todos</h1></a>
+    <ul class="list-unstyled">
+      <li>
+        <form name="addForm" ng-submit="addTodo(newTodo)">
+          <div class="input-group">
+            <input type="text" class="form-control" name="title" ng-model="newTodo" placeholder="Type todos" autofocus/>
+            <span class="input-group-btn">
+              <button class="btn btn-success" type="submit">Add</button>
+            </span>
+          </div>
+        </form>
+      </li>
+    </ul>
+
+
+    <ul class="list-unstyled" ng-repeat="todo in todos | filter:statusFilter ">
+      <li class="todo-item">
+        <!-- use template -->
+        <todo-item todo="todo" remove="remove(todo.id)" update="update(todo.id)" edit="edit(todo)"></todo-item>
+
+      </li>
+    </ul>
+    <div class="btn-group" role="group" aria-label="...">
+      <button type="button" class="btn btn-default" ng-click="status='completed'">Completed</button>
+      <button type="button" class="btn btn-default" ng-click="status='active'">Active</button>
+      <button type="button" class="btn btn-default" ng-click="status=''">All</button>
+      <button type="button" class="btn btn-default" ng-click="clearCompleted()">
+      Clear Completed
+    </button>
+    </div>
+
+    <pre>
+      {{todos| json}}
+    </pre>
+  </div>
+</body>
+</html>

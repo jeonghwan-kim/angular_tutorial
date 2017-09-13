@@ -1,0 +1,20 @@
+{
+  "name": "angular_tutorial",
+  "description": "",
+  "main": "index.html",
+  "authors": [
+    "Harryki <zgp7777@gmail.com>"
+  ],
+  "license": "ISC",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "1.6.5"
+  }
+}
